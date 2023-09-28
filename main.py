@@ -9,6 +9,7 @@ pygame.init()
 # Constants
 WIDTH, HEIGHT = 800, 600
 BUTTON_WIDTH, BUTTON_HEIGHT = 100, 40
+WINDOW_WIDTH, WINDOW_HEIGHT = 400, 300  # The size of the image display window
 FONT = pygame.font.Font(None, 36)
 WHITE = (255, 255, 255)
 GRAY = (200, 200, 200)
@@ -35,6 +36,7 @@ def open_file_dialog():
     file_path = filedialog.askopenfilename()
     if file_path:
         print("Selected File:", file_path)
+        return pygame.image.load(file_path) # Load the selected image file
 
 # Calculate button positions responsively
 button_margin = 20
@@ -42,8 +44,13 @@ button_start_x = (WIDTH - 2 * BUTTON_WIDTH - 2 * button_margin) // 2
 button_open_x = button_start_x + BUTTON_WIDTH + button_margin
 button_y = HEIGHT - BUTTON_HEIGHT - 20
 
+# Create a Pygame surface for displaying the image
+image_surface = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
+
 # Main game loop
 running = True
+image = None  # Variable to store the loaded image
+start_flag = 0 # Variable to render the image only on start
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -51,13 +58,19 @@ while running:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             if open_button_rect.collidepoint(event.pos):
-                open_file_dialog()
+                start_flag = 0
+                image = open_file_dialog() 
+                print("Open Button Clicked")
+                pygame.display.set_mode((WIDTH, HEIGHT))  # Set focus back on the Pygame window
             elif start_button_rect.collidepoint(event.pos):
+                start_flag = 1
                 print("Start Button Clicked")
             elif inc_button_rect.collidepoint(event.pos):
                 resolution += 10
+                print("Increase Button Clicked")
             elif dec_button_rect.collidepoint(event.pos):
                 resolution -= 10
+                print("Decrease Button Clicked")
 
     screen.fill((0, 0, 0))
 
@@ -76,6 +89,10 @@ while running:
     resolution_text = FONT.render(f"Resolution: {resolution}", True, WHITE)
     resolution_rect = resolution_text.get_rect(midtop=(WIDTH // 2, 50))
     screen.blit(resolution_text, resolution_rect)
+
+    if image and start_flag == 1:
+        image_surface.blit(pygame.transform.scale(image, (WINDOW_WIDTH, WINDOW_HEIGHT)), (0, 0))
+        screen.blit(image_surface, ((WIDTH - WINDOW_WIDTH) // 2, (HEIGHT - WINDOW_HEIGHT) // 2))
 
     pygame.display.flip()
 
