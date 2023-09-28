@@ -1,72 +1,68 @@
 import pygame
 import sys
-  
-  
-# initializing the constructor
+
+# Initialize Pygame
 pygame.init()
-  
-# screen resolution
-res = (720,720)
-  
-# opens up a window
-screen = pygame.display.set_mode(res)
-  
-# white color
-color = (255,255,255)
-  
-# light shade of the button
-color_light = (170,170,170)
-  
-# dark shade of the button
-color_dark = (100,100,100)
-  
-# stores the width of the
-# screen into a variable
-width = screen.get_width()
-  
-# stores the height of the
-# screen into a variable
-height = screen.get_height()
-  
-# defining a font
-smallfont = pygame.font.SysFont('Corbel',35)
-  
-# rendering a text written in
-# this font
-text = smallfont.render('quit' , True , color)
-  
-while True:
-      
-    for ev in pygame.event.get():
-          
-        if ev.type == pygame.QUIT:
-            pygame.quit()
-              
-        #checks if a mouse is clicked
-        if ev.type == pygame.MOUSEBUTTONDOWN:
-              
-            #if the mouse is clicked on the
-            # button the game is terminated
-            if width/2 <= mouse[0] <= width/2+140 and height/2 <= mouse[1] <= height/2+40:
-                pygame.quit()
-                  
-    # fills the screen with a color
-    screen.fill((60,25,60))
-      
-    # stores the (x,y) coordinates into
-    # the variable as a tuple
-    mouse = pygame.mouse.get_pos()
-      
-    # if mouse is hovered on a button it
-    # changes to lighter shade 
-    if width/2 <= mouse[0] <= width/2+140 and height/2 <= mouse[1] <= height/2+40:
-        pygame.draw.rect(screen,color_light,[width/2,height/2,140,40])
-          
-    else:
-        pygame.draw.rect(screen,color_dark,[width/2,height/2,140,40])
-      
-    # superimposing the text onto our button
-    screen.blit(text , (width/2+50,height/2))
-      
-    # updates the frames of the game
-    pygame.display.update()
+
+# Constants
+WIDTH, HEIGHT = 400, 300
+BUTTON_WIDTH, BUTTON_HEIGHT = 100, 40
+FONT = pygame.font.Font(None, 36)
+WHITE = (255, 255, 255)
+GRAY = (200, 200, 200)
+
+# Initial resolution value
+resolution = 800
+
+# Create the Pygame window
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Pygame Window with Buttons")
+
+# Function to draw buttons
+def draw_button(text, x, y, width, height, color):
+    button_rect = pygame.Rect(x, y, width, height)
+    pygame.draw.rect(screen, color, button_rect)
+    text_surface = FONT.render(text, True, WHITE)
+    text_rect = text_surface.get_rect(center=button_rect.center)
+    screen.blit(text_surface, text_rect)
+
+# Main game loop
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if open_button_rect.collidepoint(event.pos):
+                print("Open Button Clicked")
+            elif start_button_rect.collidepoint(event.pos):
+                print("Start Button Clicked")
+            elif inc_button_rect.collidepoint(event.pos):
+                resolution += 10
+            elif dec_button_rect.collidepoint(event.pos):
+                resolution -= 10
+
+    screen.fill((0, 0, 0))
+
+    # Draw buttons
+    open_button_rect = pygame.Rect(50, 200, BUTTON_WIDTH, BUTTON_HEIGHT)
+    start_button_rect = pygame.Rect(175, 200, BUTTON_WIDTH, BUTTON_HEIGHT)
+    inc_button_rect = pygame.Rect(300, 200, 40, BUTTON_HEIGHT)
+    dec_button_rect = pygame.Rect(350, 200, 40, BUTTON_HEIGHT)
+
+    draw_button("Open", *open_button_rect.topleft, BUTTON_WIDTH, BUTTON_HEIGHT, GRAY)
+    draw_button("Start", *start_button_rect.topleft, BUTTON_WIDTH, BUTTON_HEIGHT, GRAY)
+    draw_button("➕", *inc_button_rect.topleft, 40, BUTTON_HEIGHT, GRAY)
+    draw_button("➖", *dec_button_rect.topleft, 40, BUTTON_HEIGHT, GRAY)
+
+    # Draw the resolution value
+    resolution_text = FONT.render(f"Resolution: {resolution}", True, WHITE)
+    resolution_rect = resolution_text.get_rect(midtop=(WIDTH // 2, 50))
+    screen.blit(resolution_text, resolution_rect)
+
+    pygame.display.flip()
+
+# Quit Pygame
+pygame.quit()
+sys.exit()
