@@ -2,7 +2,9 @@ import pygame
 import sys
 import tkinter as tk
 from tkinter import filedialog
-from scene_image import SceneImage
+from image import SceneImage
+from sphere import Sphere
+from box import Box
 
 # Initialize Pygame
 pygame.init()
@@ -95,8 +97,12 @@ while running:
     if scene and start_flag == 1:
         # Create an instance of the PygameImageDisplay class
         pygame_image_display = SceneImage(file_path)
+        pygame_sphere_display = Sphere(file_path)
+        pygame_box_display = Box(file_path)
         # Display the image
         pygame_image_display.display_image()
+        pygame_sphere_display.display_sphere()
+        pygame_box_display.display_box()
 
     pygame.display.flip()
 
