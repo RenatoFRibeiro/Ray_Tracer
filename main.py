@@ -2,6 +2,7 @@ import pygame
 import sys
 import tkinter as tk
 from tkinter import filedialog
+from scene_image import SceneImage
 
 # Initialize Pygame
 pygame.init()
@@ -13,7 +14,7 @@ WINDOW_WIDTH, WINDOW_HEIGHT = 400, 300  # The size of the image display window
 FONT = pygame.font.Font(None, 36)
 WHITE = (255, 255, 255)
 GRAY = (200, 200, 200)
-
+file_path=''
 # Initial resolution value
 resolution = 800
 
@@ -31,12 +32,13 @@ def draw_button(text, x, y, width, height, color):
 
 # Function to open a file dialog
 def open_file_dialog():
+    global file_path  # Declare that we want to use the global variable
     root = tk.Tk()
     root.withdraw()  # Hide the tkinter root window
     file_path = filedialog.askopenfilename()
     if file_path:
         print("Selected File:", file_path)
-        return pygame.image.load(file_path) # Load the selected image file
+        return file_path # Load the selected file
 
 # Calculate button positions responsively
 button_margin = 20
@@ -44,12 +46,12 @@ button_start_x = (WIDTH - 2 * BUTTON_WIDTH - 2 * button_margin) // 2
 button_open_x = button_start_x + BUTTON_WIDTH + button_margin
 button_y = HEIGHT - BUTTON_HEIGHT - 20
 
-# Create a Pygame surface for displaying the image
+# Create a Pygame surface for displaying the scene
 image_surface = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
 
 # Main game loop
 running = True
-image = None  # Variable to store the loaded image
+scene = None  # Variable to store the loaded image
 start_flag = 0 # Variable to render the image only on start
 while running:
     for event in pygame.event.get():
@@ -59,7 +61,7 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if open_button_rect.collidepoint(event.pos):
                 start_flag = 0
-                image = open_file_dialog() 
+                scene = open_file_dialog() 
                 print("Open Button Clicked")
                 pygame.display.set_mode((WIDTH, HEIGHT))  # Set focus back on the Pygame window
             elif start_button_rect.collidepoint(event.pos):
@@ -72,7 +74,7 @@ while running:
                 resolution -= 10
                 print("Decrease Button Clicked")
 
-    screen.fill((0, 0, 0))
+    screen.fill((0, 50, 0))
 
     # Draw buttons
     open_button_rect = pygame.Rect(button_open_x, button_y, BUTTON_WIDTH, BUTTON_HEIGHT)
@@ -90,9 +92,11 @@ while running:
     resolution_rect = resolution_text.get_rect(midtop=(WIDTH // 2, 50))
     screen.blit(resolution_text, resolution_rect)
 
-    if image and start_flag == 1:
-        image_surface.blit(pygame.transform.scale(image, (WINDOW_WIDTH, WINDOW_HEIGHT)), (0, 0))
-        screen.blit(image_surface, ((WIDTH - WINDOW_WIDTH) // 2, (HEIGHT - WINDOW_HEIGHT) // 2))
+    if scene and start_flag == 1:
+        # Create an instance of the PygameImageDisplay class
+        pygame_image_display = SceneImage(file_path)
+        # Display the image
+        pygame_image_display.display_image()
 
     pygame.display.flip()
 
