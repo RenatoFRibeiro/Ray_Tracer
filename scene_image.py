@@ -1,0 +1,45 @@
+import pygame
+
+class SceneImage:
+    def __init__(self, file_name_specifications):
+        self.file_name_specifications = file_name_specifications
+
+    def read_image_specifications(self):
+        with open(self.file_name_specifications) as file:
+            lines = file.readlines()
+            image_settings = 0
+            image_flag = 0
+            for line in lines:
+                parts = line.strip().split()
+                if 'Image' in parts:
+                    image_flag = 1
+                    continue
+                if image_flag == 1 and '{' in parts:
+                    image_settings = 1
+                    continue
+                if image_flag == 1 and image_settings == 1:
+                    width = int(parts[0])
+                    height = int(parts[1])
+                    image_settings = 2
+                    continue
+                if image_flag == 1 and image_settings == 2:
+                    image_settings = 0
+                    background_color = tuple(int(float(val) * 255) for val in parts)
+                if image_flag == 1 and '}' in parts:
+                    image_flag = 0
+                    image_settings = 0
+                    continue
+        return width, height, background_color
+
+    def display_image(self):
+        width, height, background_color = self.read_image_specifications()
+        pygame.init()
+        screen = pygame.display.set_mode((width, height))
+        screen.fill(background_color)
+        pygame.display.flip()
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+        pygame.quit()
