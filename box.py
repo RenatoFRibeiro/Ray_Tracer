@@ -1,6 +1,3 @@
-import pygame
-import sys
-
 class Box:
     def __init__(self, file_name_specifications):
         self.file_name_specifications = file_name_specifications
@@ -31,9 +28,8 @@ class Box:
                 if box_transf_flag == 1 and '}' in parts:
                     box_transf_flag = 0
                     continue
-            # No need to print here
         return self.box_transf_index, self.box_material_index
     
     def display_box(self):
         box_transf_index, box_material_index = self.read_box_specifications()
-        print(box_transf_index, box_material_index)
+        print("Box: ",box_transf_index, box_material_index)
