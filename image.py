@@ -1,5 +1,3 @@
-import pygame
-
 class SceneImage:
     def __init__(self, file_name_specifications):
         self.file_name_specifications = file_name_specifications
@@ -36,17 +34,4 @@ class SceneImage:
 
     def display_image(self):
         width, height, backgroundcolor = self.read_image_specifications()
-        print(width, height, backgroundcolor)
-
-"""    def display_image(self):
-        self.read_image_specifications()
-        pygame.init()
-        screen = pygame.display.set_mode((self.width, self.height))
-        screen.fill(self.background_color)
-        pygame.display.flip()
-        running = True
-        while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-        pygame.quit()"""
+        print("Image: ",width, height, backgroundcolor)
