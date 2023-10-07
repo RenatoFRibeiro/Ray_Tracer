@@ -1,6 +1,3 @@
-import pygame
-import sys
-
 class Sphere:
     def __init__(self, file_name_specifications):
         self.file_name_specifications = file_name_specifications
@@ -35,4 +32,4 @@ class Sphere:
     
     def display_sphere(self):
         sphere_transf_index, sphere_material_index = self.read_sphere_specifications()
-        print(sphere_transf_index, sphere_material_index)
+        print("Sphere: ",sphere_transf_index, sphere_material_index)
