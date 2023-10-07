@@ -1,45 +1,46 @@
-import pygame
-import sys
-
 class Camera:
     def __init__(self, file_name_specifications):
         self.file_name_specifications = file_name_specifications
-        self.box_transf_index = None
-        self.box_distance = None
-        self.box_fov = None
+        self.camera_transf_index = None
+        self.camera_distance = None
+        self.camera_fov = None
 
     def read_camera_specifications(self):
         with open(self.file_name_specifications) as file:
             lines = file.readlines()
-            box_flag = 0
-            box_distance_flag = 0
-            box_fov_flag = 0
-            box_transf_flag = 0
+            camera_flag = 0
+            camera_distance_flag = 0
+            camera_fov_flag = 0
+            camera_transf_flag = 0
             for line in lines:
                 parts = line.strip().split()
-                if 'Box' in parts:
-                    box_flag = 1
+                if 'Camera' in parts:
+                    camera_flag = 1
                     continue
-                if box_flag == 1 and '{' in parts:
-                    box_transf_flag = 1
+                elif camera_flag == 1 and '{' in parts:
+                    camera_transf_flag = 1
                     continue
-                if box_transf_flag == 1 and box_flag == 1:
-                    self.box_transf_index = parts[0]
-                    box_distance_flag = 1
+                elif camera_transf_flag == 1 and camera_flag == 1:
+                    camera_flag = 2
+                    camera_transf_flag = 2
+                    camera_distance_flag = 1
+                    self.camera_transf_index = parts[0]
                     continue
-                if box_transf_flag == 1 and box_distance_flag == 1 and box_flag == 1:
-                    self.box_distance = parts[0]
-                    box_fov_flag = 1
+                elif camera_transf_flag == 2 and camera_distance_flag == 1 and camera_flag == 2:
+                    self.camera_distance = float(parts[0])
+                    camera_distance_flag = 2
+                    camera_flag = 3
+                    camera_transf_flag = 3
+                    camera_fov_flag = 1
                     continue
-                if box_transf_flag == 1 and box_distance_flag == 1 and box_flag == 1 and box_fov_flag == 1:
-                    self.box_fov = parts[0]
-                    box_fov_flag = 0
-                    box_distance_flag = 0
-                    box_tranf_flag = 0
+                elif camera_transf_flag == 3 and camera_distance_flag == 2 and camera_flag == 3 and camera_fov_flag == 1:
+                    self.camera_fov = parts[0]
+                    camera_fov_flag = 0
+                    camera_distance_flag = 0
+                    camera_transf_flag = 0
                     continue
-            # No need to print here
-        return self.box_transf_index, self.box_distance, self.box_fov
+        return self.camera_transf_index, self.camera_distance, self.camera_fov
     
-    def display_box(self):
-        box_transf_index, box_distance, box_fov = self.read_camera_specifications()
-        print(box_transf_index, box_distance, box_fov)
+    def display_camera(self):
+        camera_transf_index, camera_distance, camera_fov = self.read_camera_specifications()
+        print("Camera:",camera_transf_index, camera_distance, camera_fov)
